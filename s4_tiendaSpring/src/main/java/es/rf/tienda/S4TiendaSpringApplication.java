@@ -3,8 +3,12 @@ package es.rf.tienda;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-
-//Cambios para ver reositorio
+/**
+ * La Aplicación web Tienda Incienso. Proyecto TalentCampus Accenture
+ * 
+ * @author e.a.martin.muriel
+ *
+ */
 @SpringBootApplication(scanBasePackages={"es.rf.tienda"})
 public class S4TiendaSpringApplication {
 

@@ -53,7 +53,7 @@ public class Usuario {
 		if (Validator.cumpleLongitud(user_nombre, Constants.LONG_MIN_1, Constants.LONG_MAX_200)) {
 			this.user_nombre = user_nombre;
 		} else {
-			throw new DomainException(ErrorConstans.ERR_LONGITUD_CATEGORIA);
+			throw new DomainException(ErrorConstans.ERR_LONGITUD_NOMBRE_CATEGORIA);
 		}
 
 	}

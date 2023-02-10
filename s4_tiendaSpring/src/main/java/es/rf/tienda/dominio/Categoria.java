@@ -1,40 +1,44 @@
 package es.rf.tienda.dominio;
 
+import java.io.Serializable;
+
 import es.rf.tienda.constants.Constants;
 import es.rf.tienda.constants.ErrorConstans;
 import es.rf.tienda.exception.DomainException;
 import es.rf.tienda.util.Validator;
+import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.TableGenerator;
 
 /**
  * 
- * Nombre Categoria Descripcion Lista de categorías
+ * Clase Categoria. Modelo Categoria
  * 
  * @author Eisabet Martin Muriel
  * @version
  *
  */
+@SuppressWarnings("serial")
+@Entity
+@Table(schema = "ALUMNO_EMM", name = "Categoria")
+public class Categoria implements Serializable, Modelo {
 
-@Entity 
-@Table(name="Categoria")
-public class Categoria {
-
-	private static final String Throw = null;
 	@Id
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "categoria_sequ")
+	@TableGenerator(name = "categoria_sequ", table = "GENERATOR_TABLE", pkColumnName = "key", valueColumnName = "next", pkColumnValue = "course", allocationSize = 30)
+
 	private int id_categoria; // identificador categoria
-	@Column
+	@Column(nullable = false, length = 50)
 	private String cat_nombre; // nombre de la categoria
-	@Column
+	@Column(nullable = true, length = 200)
 	private String cat_descripcion; // descripcion de la categoria
 
 	public Categoria() {
-	}
-
-	public boolean isValid() {
-		return !Validator.isVacio(cat_nombre) && id_categoria > 0;
 	}
 
 	/**
@@ -70,10 +74,15 @@ public class Categoria {
 	 */
 	public void setCat_nombre(String cat_nombre) throws DomainException {
 
-		if (Validator.cumpleLongitud(cat_nombre, Constants.LONG_MIN_5, Constants.LONG_MAX_49)) {
-			this.cat_nombre = cat_nombre;
+		if (cat_descripcion != null) {
+
+			if (Validator.cumpleLongitud(cat_nombre, Constants.LONG_MIN_5, Constants.LONG_MAX_50)) {
+				this.cat_nombre = cat_nombre;
+			} else {
+				throw new DomainException(ErrorConstans.ERR_LONGITUD_NOMBRE_CATEGORIA);
+			}
 		} else {
-			throw new DomainException(ErrorConstans.ERR_LONGITUD_CATEGORIA);
+			throw new DomainException(ErrorConstans.ERR_NULL);
 		}
 
 	}
@@ -88,16 +97,12 @@ public class Categoria {
 	}
 
 	/**
-	 * setter para la descripcion de categoria
-	 * 
+	 * setter para la descripcion de categoria Añade solo los 200 primeros
+	 * caracteres o null si la cadena es nula.
 	 */
-	public void setCat_descripcion(String cat_descripcion) throws DomainException {
+	public void setCat_descripcion(String cat_descripcion) {
 
-		if (Validator.cumpleLongitud(cat_descripcion, Constants.LONG_MIN_1, Constants.LONG_MAX_200)) {
-			this.cat_descripcion = cat_descripcion;
-		} else {
-			throw new DomainException(ErrorConstans.ERR_LONGITUD_CATEGORIA);
-		}
+		this.cat_descripcion = (cat_descripcion == null) ? null : StringUtils.truncate(cat_descripcion, 200);
 
 	}
 
@@ -139,6 +144,17 @@ public class Categoria {
 	public String toString() {
 		return "Categoria [id_categoria=" + id_categoria + ", cat_nombre=" + cat_nombre + ", cat_descripcion="
 				+ cat_descripcion + "]";
+	}
+
+	@Override
+	public boolean isValidInsert() {
+		return !Validator.isVacio(cat_nombre);
+
+	}
+
+	@Override
+	public boolean isValidUpdate() {
+		return !Validator.isVacio(cat_nombre) && id_categoria > 0;
 	}
 
 }
