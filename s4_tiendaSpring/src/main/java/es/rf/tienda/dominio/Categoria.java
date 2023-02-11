@@ -3,8 +3,8 @@ package es.rf.tienda.dominio;
 import java.io.Serializable;
 
 import es.rf.tienda.constants.Constants;
-import es.rf.tienda.constants.ErrorConstans;
 import es.rf.tienda.exception.DomainException;
+import es.rf.tienda.util.ErrorMessages;
 import es.rf.tienda.util.Validator;
 import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.Column;
@@ -79,10 +79,10 @@ public class Categoria implements Serializable, Modelo {
 			if (Validator.cumpleLongitud(cat_nombre, Constants.LONG_MIN_5, Constants.LONG_MAX_50)) {
 				this.cat_nombre = cat_nombre;
 			} else {
-				throw new DomainException(ErrorConstans.ERR_LONGITUD_NOMBRE_CATEGORIA);
+				throw new DomainException(ErrorMessages.CATERR_LONG_NOMBRE);
 			}
 		} else {
-			throw new DomainException(ErrorConstans.ERR_NULL);
+			throw new DomainException(ErrorMessages.ERR_NULL);
 		}
 
 	}

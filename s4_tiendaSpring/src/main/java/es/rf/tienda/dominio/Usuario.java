@@ -3,8 +3,8 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 import es.rf.tienda.constants.Constants;
-import es.rf.tienda.constants.ErrorConstans;
 import es.rf.tienda.exception.DomainException;
+import es.rf.tienda.util.ErrorMessages;
 import es.rf.tienda.util.Validator;
 
 public class Usuario {
@@ -53,7 +53,7 @@ public class Usuario {
 		if (Validator.cumpleLongitud(user_nombre, Constants.LONG_MIN_1, Constants.LONG_MAX_200)) {
 			this.user_nombre = user_nombre;
 		} else {
-			throw new DomainException(ErrorConstans.ERR_LONGITUD_NOMBRE_CATEGORIA);
+			throw new DomainException(ErrorMessages.CATERR_LONG_NOMBRE);
 		}
 
 	}
@@ -67,7 +67,7 @@ public class Usuario {
 
 			this.user_email = user_email;
 		} else {
-			throw new DomainException(ErrorConstans.ERR_EMAIL);
+			throw new DomainException(ErrorMessages.USUERR_EMAIL);
 		}
 
 	}
@@ -81,7 +81,7 @@ public class Usuario {
 
 			this.user_pass = user_pass;
 		} else {
-			throw new DomainException(ErrorConstans.ERR_PASSWORD);
+			throw new DomainException(ErrorMessages.USUERR_PASSWORD);
 		}
 
 	}
@@ -103,7 +103,7 @@ public class Usuario {
 
 			this.user_dni = user_dni;
 		} else {
-			throw new DomainException(ErrorConstans.ERR_DNI);
+			throw new DomainException(ErrorMessages.USUERR_DNI);
 		}
 
 	}

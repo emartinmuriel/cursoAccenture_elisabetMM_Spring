@@ -3,6 +3,9 @@ package es.rf.tienda.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import es.rf.tienda.beans.CategoriaResponse;
+import es.rf.tienda.beans.MessageResponse;
 import es.rf.tienda.dominio.Categoria;
 import es.rf.tienda.service.IServicioCategoria;
 
@@ -29,46 +34,50 @@ public class CategoriaController {
 	private IServicioCategoria categoriaService;
 
 	@GetMapping("/{id}")
-	public Categoria leerUno(@PathVariable("id") int id) {
-		return categoriaService.listaUno(id);
-	}
+	public ResponseEntity<CategoriaResponse> leerUno(@PathVariable("id") int id) {
+		ResponseEntity response;
+		CategoriaResponse res = categoriaService.listaUno(id);
 
-	@GetMapping("/hola")
-	public String[] saludaServer() {
-		return new String[] { "200", "Hola caracola!!" };
+		response = new ResponseEntity<CategoriaResponse>(res, HttpStatus.valueOf(res.getResponse().getStatus()));
+		return response;
+
 	}
 
 	@GetMapping()
-	public List<Categoria> listarTodos() {
-		return categoriaService.listarTodos();
+	public ResponseEntity<CategoriaResponse> listarTodos() {
+
+		CategoriaResponse res = categoriaService.listarTodos();
+		ResponseEntity response = new ResponseEntity<CategoriaResponse>(res, HttpStatus.valueOf(res.getResponse().getStatus()));
+
+		return response;
+
 	}
 
 	@PostMapping()
-	public String[] alta(@RequestBody Categoria c) {
+	public ResponseEntity<MessageResponse> alta(@RequestBody Categoria c) {
 
-		if (categoriaService.insert(c)) {
-			return new String[] { "200", "Registro guardado" };
-		} else {
-			return new String[] { "400", "Error: Registro no guardado. Registro inválido" };
-		}
+		MessageResponse res = categoriaService.insert(c);
+		ResponseEntity response = new ResponseEntity<MessageResponse>(res, HttpStatus.valueOf(res.getStatus()));
+
+		return response;
 	}
 
 	@PutMapping()
-	public String[] actualizar(@RequestBody Categoria c) {
-		if (categoriaService.update(c)) {
-			return new String[] {"200", "Registro actualizado"};
-		}else {
-			return new String[] {"400", "ERROR: No se ha podido actualizar"};
-		}
+	public ResponseEntity<MessageResponse> actualizar(@RequestBody Categoria c) {
+
+		MessageResponse res = categoriaService.update(c);
+		ResponseEntity response = new ResponseEntity<MessageResponse>(res, HttpStatus.valueOf(res.getStatus()));
+
+		return response;
 	}
-	
+
 	@DeleteMapping("/{id}")
-	public String[] eliminar(@PathVariable("id") int id) {
-		if (categoriaService.deleteById(id)) {
-			return new String[] {"200", "Registro eliminado"};
-		}else {
-			return new String[] {"400", "ERROR: No se ha podido eliminar"};
-		}
-	} 
+	public ResponseEntity<MessageResponse> eliminar(@PathVariable("id") int id) {
+
+		MessageResponse res = categoriaService.deleteById(id);
+		ResponseEntity response = new ResponseEntity<MessageResponse>(res, HttpStatus.valueOf(res.getStatus()));
+
+		return response;
+	}
 
 }

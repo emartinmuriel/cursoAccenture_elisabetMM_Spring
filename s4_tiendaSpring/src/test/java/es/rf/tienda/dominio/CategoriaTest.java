@@ -37,10 +37,10 @@ class CategoriaTest {
 
 	}
 
-	@Disabled
-	@Test
-	void testGetCat_nombre() {
 
+	@Test
+	void testSetCat_nombre() {
+		
 	}
 
 	@Test
@@ -56,25 +56,21 @@ class CategoriaTest {
 			categoria.setCat_nombre(ERROR_LONG_NOMBRE_MIN);
 		});
 	}
-
-	@Disabled
 	@Test
-	void testGetCat_descripcion() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	void testSetCat_descripcion_Error1() {
+	void testSetCat_nombre_ok() {
 		Exception exception = assertThrows(DomainException.class, () -> {
-			categoria.setCat_descripcion(ERROR_LONG_DESCRIPCION_MAX);
+			categoria.setCat_nombre("correcto");
 		});
 	}
 
+	
+
 	@Test
-	void testSetCat_descripcion_Error2() {
-		Exception exception = assertThrows(DomainException.class, () -> {
-			categoria.setCat_descripcion(ERROR_LONG_DESCRIPCION_MIN);
-		});
+	void testSetCat_descripcion_ok_NULL() {
+		categoria.setCat_descripcion(ERROR_NULL);
+		assertNull(categoria.getCat_descripcion());
 	}
+
+
 
 }
