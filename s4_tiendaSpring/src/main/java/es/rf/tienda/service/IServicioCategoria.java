@@ -6,7 +6,7 @@ import es.rf.tienda.beans.CategoriaResponse;
 import es.rf.tienda.beans.MessageResponse;
 import es.rf.tienda.dominio.Categoria;
 
-public interface IServicioCategoria<T, N> {
+public interface IServicioCategoria<T, N>  {
 
 	public MessageResponse insert(T t);
 

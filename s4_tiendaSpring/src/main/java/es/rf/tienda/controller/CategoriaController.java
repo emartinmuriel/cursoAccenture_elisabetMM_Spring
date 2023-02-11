@@ -55,7 +55,7 @@ public class CategoriaController {
 
 	@PostMapping()
 	public ResponseEntity<MessageResponse> alta(@RequestBody Categoria c) {
-
+		System.out.println(c.getCat_nombre());
 		MessageResponse res = categoriaService.insert(c);
 		ResponseEntity response = new ResponseEntity<MessageResponse>(res, HttpStatus.valueOf(res.getStatus()));
 

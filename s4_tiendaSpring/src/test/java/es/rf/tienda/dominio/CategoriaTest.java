@@ -25,19 +25,6 @@ class CategoriaTest {
 
 	}
 
-	@Disabled
-	@Test
-	void testSetId_categoria_error_1() {
-
-	}
-
-	@Disabled
-	@Test
-	void testSetId_categoria_error_3() {
-
-	}
-
-
 	@Test
 	void testSetCat_nombre() {
 		
@@ -57,13 +44,18 @@ class CategoriaTest {
 		});
 	}
 	@Test
-	void testSetCat_nombre_ok() {
+	void testSetCat_nombre_NOok() {
 		Exception exception = assertThrows(DomainException.class, () -> {
 			categoria.setCat_nombre("correcto");
 		});
 	}
 
-	
+	@Test
+	void testIsValidInsert() throws DomainException{
+		categoria.setCat_nombre("correcto");
+		assertTrue(categoria.isValidInsert());
+	}
+
 
 	@Test
 	void testSetCat_descripcion_ok_NULL() {

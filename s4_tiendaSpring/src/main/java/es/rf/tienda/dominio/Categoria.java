@@ -73,17 +73,14 @@ public class Categoria implements Serializable, Modelo {
 	 * 
 	 */
 	public void setCat_nombre(String cat_nombre) throws DomainException {
-
-		if (cat_descripcion != null) {
-
+		
+		
 			if (Validator.cumpleLongitud(cat_nombre, Constants.LONG_MIN_5, Constants.LONG_MAX_50)) {
 				this.cat_nombre = cat_nombre;
 			} else {
 				throw new DomainException(ErrorMessages.CATERR_LONG_NOMBRE);
 			}
-		} else {
-			throw new DomainException(ErrorMessages.ERR_NULL);
-		}
+	
 
 	}
 
@@ -101,7 +98,6 @@ public class Categoria implements Serializable, Modelo {
 	 * caracteres o null si la cadena es nula.
 	 */
 	public void setCat_descripcion(String cat_descripcion) {
-
 		this.cat_descripcion = (cat_descripcion == null) ? null : StringUtils.truncate(cat_descripcion, 200);
 
 	}
@@ -148,13 +144,13 @@ public class Categoria implements Serializable, Modelo {
 
 	@Override
 	public boolean isValidInsert() {
-		return !Validator.isVacio(cat_nombre);
+		return !Validator.isVacio(this.cat_nombre);
 
 	}
 
 	@Override
 	public boolean isValidUpdate() {
-		return !Validator.isVacio(cat_nombre) && id_categoria > 0;
+		return !Validator.isVacio(this.cat_nombre) && this.id_categoria > 0;
 	}
 
 }

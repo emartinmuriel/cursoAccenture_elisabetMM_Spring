@@ -1,5 +1,6 @@
 package es.rf.tienda.service;
 
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -7,6 +8,7 @@ import es.rf.tienda.beans.CategoriaResponse;
 import es.rf.tienda.beans.MessageResponse;
 import es.rf.tienda.constants.Constants;
 import es.rf.tienda.dominio.Categoria;
+import es.rf.tienda.exception.DomainException;
 import es.rf.tienda.repository.ICategoriaRepo;
 
 /**
@@ -71,6 +73,7 @@ public class ServicioCategoria implements IServicioCategoria<Categoria, Integer>
 		return mensaje;
 
 	}
+
 	/**
 	 * Metodo update. Elimina un dato Categoria de la BBDD por su id.
 	 * 
@@ -90,6 +93,7 @@ public class ServicioCategoria implements IServicioCategoria<Categoria, Integer>
 		}
 		return mensaje;
 	}
+
 	/**
 	 * Metodo listraTodos. Lista todos los registros de Categoria en la BBDD
 	 * 
@@ -114,8 +118,10 @@ public class ServicioCategoria implements IServicioCategoria<Categoria, Integer>
 		}
 		return res;
 	}
+
 	/**
 	 * Metodo listraUno. Busca un registro en la BBDD por el id, y duelve los datos
+	 * 
 	 * @param Integer id
 	 * @return CategoriaResponse
 	 */
