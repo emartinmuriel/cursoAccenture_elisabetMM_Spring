@@ -9,6 +9,7 @@ import es.rf.tienda.beans.MessageResponse;
 import es.rf.tienda.constants.Constants;
 import es.rf.tienda.dominio.Categoria;
 import es.rf.tienda.exception.DomainException;
+import es.rf.tienda.exception.NotFoundException;
 import es.rf.tienda.repository.ICategoriaRepo;
 
 /**
@@ -130,6 +131,11 @@ public class ServicioCategoria implements IServicioCategoria<Categoria, Integer>
 
 		CategoriaResponse res = new CategoriaResponse();
 		MessageResponse mensaje = new MessageResponse();
+		
+		if (id==0) {
+			throw new NotFoundException("El id " + id + " no existe.");
+		}
+		
 		try {
 			res.addDatos(cDao.findById(id).get());
 

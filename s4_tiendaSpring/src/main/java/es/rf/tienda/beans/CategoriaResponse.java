@@ -28,5 +28,5 @@ public class CategoriaResponse {
 		this.datos.add(categoria);
 		
 	}
-	
+
 }

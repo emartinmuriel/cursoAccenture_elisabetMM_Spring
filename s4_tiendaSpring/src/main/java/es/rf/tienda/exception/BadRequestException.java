@@ -1,0 +1,10 @@
+package es.rf.tienda.exception;
+
+public class BadRequestException extends RuntimeException{
+
+	private static final String DESCRIPCION = "Bad Request Exception (400)";
+	
+	public BadRequestException(String info) {
+		super(DESCRIPCION + ". " + info);
+	}
+}

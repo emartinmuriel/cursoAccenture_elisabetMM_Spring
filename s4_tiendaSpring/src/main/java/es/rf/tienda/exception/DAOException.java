@@ -7,19 +7,12 @@ package es.rf.tienda.exception;
  *
  */
 @SuppressWarnings("serial")
-public class DAOException extends Exception {
+public class DAOException extends RuntimeException {
 
-	private String message;
-
-	public DAOException() {
-
-	}
-
+	private static final String DESCRIPCION = "Error DAO ";
+	
 	public DAOException(String message) {
-		this.message = message;
-	}
-
-	public String getMessage() {
-		return this.message;
+		super(DESCRIPCION + ". " + message);
+		
 	}
 }

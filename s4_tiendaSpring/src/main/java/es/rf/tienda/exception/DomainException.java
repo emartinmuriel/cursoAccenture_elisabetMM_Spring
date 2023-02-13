@@ -7,19 +7,17 @@ package es.rf.tienda.exception;
  *
  */
 @SuppressWarnings("serial")
-public class DomainException extends Exception {
-	private String message;
+public class DomainException extends BadRequestException {
+	private static final String DESCRIPCION = "Error de Validacion ";
+	
 
 	public DomainException() {
-
+		super(DESCRIPCION);
 	}
 
 	public DomainException(String message) {
-		this.message = message;
-	}
-
-	public String getMessage() {
-		return this.message;
+		super(DESCRIPCION + ". " + message);
+		
 	}
 
 }
