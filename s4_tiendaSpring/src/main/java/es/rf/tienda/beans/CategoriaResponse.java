@@ -6,9 +6,9 @@ import java.util.List;
 import es.rf.tienda.dominio.Categoria;
 
 public class CategoriaResponse {
-	
-	private List<Categoria> datos = new ArrayList<>();
 	private MessageResponse response;
+	private List<Categoria> datos = new ArrayList<>();
+	
 	
 	
 	public List<Categoria> getDatos() {

@@ -3,6 +3,9 @@ package es.rf.tienda.beans;
 public class MessageResponse {
 	private int status;
 	private String message;
+	
+	
+	
 	public int getStatus() {
 		return status;
 	}
