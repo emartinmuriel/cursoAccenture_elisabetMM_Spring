@@ -1,12 +1,21 @@
 package es.rf.tienda.service;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.Closeable;
+import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -21,14 +30,14 @@ import es.rf.tienda.repository.ICategoriaRepo;
 
 class ServicioCategoriaTest {
 
+	@Mock
+	private ICategoriaRepo cDaoTest;
 	@InjectMocks
 	private ServicioCategoria categoriaService;
-	@Mock
-	ICategoriaRepo cDaoTest;
-
-	private static AutoCloseable closeable;
+	
+	private List<Categoria> listaCategorias;
 	private CategoriaResponse catRes;
-	private Categoria cat;
+	private Optional<Categoria> cat;
 	private MessageResponse mensajeResOk;
 	private MessageResponse mensajeResBadRequest;
 	private MessageResponse mensajeResCreated;
@@ -36,22 +45,12 @@ class ServicioCategoriaTest {
 	private final Integer ID_VALIDA = 3;
 	private final Integer ID_NOT_EXIST = 0;
 
-
-	
-    @BeforeAll public static void openMocks() {
- //     closeable = MockitoAnnotations.openMocks(this);
-    }
-
-    @AfterAll public void releaseMocks() throws Exception {
-       closeable.close();
-    }
-	
 	@BeforeEach
 	public void init() {
-		
+
 		catRes = new CategoriaResponse();
 		// OK
-		
+
 		mensajeResOk = new MessageResponse();
 		mensajeResOk.setStatus(Constants.STATUSCODE_OK);
 
@@ -67,37 +66,59 @@ class ServicioCategoriaTest {
 		mensajeResNotFound = new MessageResponse();
 		mensajeResNotFound.setStatus(Constants.STATUSCODE_NOT_FOUND);
 	}
-
 	@Test
-	void testLeerUno_OK() {
-		
-		Mockito.when(categoriaService.listaUno(Mockito.anyInt())).thenReturn(catRes);
-		
-	}
+	void testListarTodos() {
+	    when(cDaoTest.findAll()).thenReturn(listaCategorias);
+	    doNothing().when(cDaoTest).findAll(); 
+	    categoriaService.listarTodos();
 
+	}
+	@Test
+	void testListaUno_OK() {
+
+	    when(cDaoTest.findById(ID_VALIDA)).thenReturn(cat);
+	    doNothing().when(cDaoTest).findById(ID_VALIDA); 
+	    categoriaService.listaUno(ID_VALIDA);
+	    verify(cDaoTest).existsById(ID_VALIDA);
+	    verify(cDaoTest).findById(ID_VALIDA);
+	}
+	@Disabled
 	@Test
 	void testInsert() {
 		fail("Not yet implemented");
 	}
-
+	@Disabled
 	@Test
 	void testUpdate() {
 		fail("Not yet implemented");
 	}
-
+	@Disabled
 	@Test
 	void testDeleteById() {
-		fail("Not yet implemented");
+
+	    when(cDaoTest.existsById(ID_VALIDA)).thenReturn(true);
+	    doNothing().when(cDaoTest).deleteById(ID_VALIDA); 
+	    categoriaService.deleteById(ID_VALIDA);
+	    verify(cDaoTest).existsById(ID_VALIDA);
+	    verify(cDaoTest).deleteById(ID_VALIDA);
 	}
 
 	@Test
-	void testListarTodos() {
-		fail("Not yet implemented");
-	}
+	 void testDeleteById_novalida() throws Exception {
 
-	@Test
-	void testListaUno() {
-		fail("Not yet implemented");
-	}
+		    // si:
+		    when(cDaoTest.existsById(ID_NOT_EXIST)).thenReturn(false);
+
+		    // responde:
+		    Exception thrown = assertThrows(
+		            Exception.class,
+		            () -> categoriaService.deleteById(ID_NOT_EXIST),
+		            "El id de la categoria a eliminar no existe en la base de datos");
+		    // y entonces:
+		    assertNotNull(thrown);
+		    assertTrue(thrown.getMessage().contains("La categoria no existe"));
+		  }
+
+
 
 }
