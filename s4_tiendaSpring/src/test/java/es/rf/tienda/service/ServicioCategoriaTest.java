@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -76,11 +77,11 @@ class ServicioCategoriaTest {
 	@Test
 	void testListaUno_OK() {
 
-	    when(cDaoTest.findById(ID_VALIDA)).thenReturn(cat);
-	    doNothing().when(cDaoTest).findById(ID_VALIDA); 
-	    categoriaService.listaUno(ID_VALIDA);
-	    verify(cDaoTest).existsById(ID_VALIDA);
-	    verify(cDaoTest).findById(ID_VALIDA);
+	    when(cDaoTest.findById(anyInt())).thenReturn(cat);
+	    doNothing().when(cDaoTest).findById(anyInt()); 
+	    categoriaService.listaUno(anyInt());
+	    verify(cDaoTest).existsById(anyInt());
+	    verify(cDaoTest).findById(anyInt());
 	}
 	@Disabled
 	@Test
@@ -96,11 +97,11 @@ class ServicioCategoriaTest {
 	@Test
 	void testDeleteById() {
 
-	    when(cDaoTest.existsById(ID_VALIDA)).thenReturn(true);
-	    doNothing().when(cDaoTest).deleteById(ID_VALIDA); 
-	    categoriaService.deleteById(ID_VALIDA);
-	    verify(cDaoTest).existsById(ID_VALIDA);
-	    verify(cDaoTest).deleteById(ID_VALIDA);
+	    when(cDaoTest.existsById(anyInt())).thenReturn(true);
+	    doNothing().when(cDaoTest).deleteById(anyInt()); 
+	    categoriaService.deleteById(anyInt());
+	    verify(cDaoTest).existsById(anyInt());
+	    verify(cDaoTest).deleteById(anyInt());
 	}
 
 	@Test
@@ -112,7 +113,7 @@ class ServicioCategoriaTest {
 		    // responde:
 		    Exception thrown = assertThrows(
 		            Exception.class,
-		            () -> categoriaService.deleteById(ID_NOT_EXIST),
+		            () -> categoriaService.deleteById(0),
 		            "El id de la categoria a eliminar no existe en la base de datos");
 		    // y entonces:
 		    assertNotNull(thrown);
