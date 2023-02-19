@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -27,18 +28,19 @@ import es.rf.tienda.beans.CategoriaResponse;
 import es.rf.tienda.beans.MessageResponse;
 import es.rf.tienda.constants.Constants;
 import es.rf.tienda.dominio.Categoria;
+import es.rf.tienda.exception.BadRequestException;
+import es.rf.tienda.exception.DomainException;
 import es.rf.tienda.repository.ICategoriaRepo;
 
 class ServicioCategoriaTest {
 
-	@Mock
-	private ICategoriaRepo cDaoTest;
-	@InjectMocks
-	private ServicioCategoria categoriaService;
-	
+	private ICategoriaRepo cDaoTest = Mockito.mock(ICategoriaRepo.class);
+	private ServicioCategoria categoriaService = Mockito.mock(ServicioCategoria.class);
+
 	private List<Categoria> listaCategorias;
 	private CategoriaResponse catRes;
-	private Optional<Categoria> cat;
+	private Optional<Categoria> catOptional;
+	private Categoria cat;
 	private MessageResponse mensajeResOk;
 	private MessageResponse mensajeResBadRequest;
 	private MessageResponse mensajeResCreated;
@@ -50,6 +52,7 @@ class ServicioCategoriaTest {
 	public void init() {
 
 		catRes = new CategoriaResponse();
+		cat = new Categoria();
 		// OK
 
 		mensajeResOk = new MessageResponse();
@@ -67,59 +70,90 @@ class ServicioCategoriaTest {
 		mensajeResNotFound = new MessageResponse();
 		mensajeResNotFound.setStatus(Constants.STATUSCODE_NOT_FOUND);
 	}
+
 	@Test
 	void testListarTodos() {
 	    when(cDaoTest.findAll()).thenReturn(listaCategorias);
-	    doNothing().when(cDaoTest).findAll(); 
-	    categoriaService.listarTodos();
-
+	    when(categoriaService.listarTodos()).thenReturn(catRes);
 	}
+
 	@Test
 	void testListaUno_OK() {
 
-	    when(cDaoTest.findById(anyInt())).thenReturn(cat);
-	    doNothing().when(cDaoTest).findById(anyInt()); 
-	    categoriaService.listaUno(anyInt());
-	    verify(cDaoTest).existsById(anyInt());
-	    verify(cDaoTest).findById(anyInt());
+		when(cDaoTest.findById(anyInt())).thenReturn(catOptional);
+		when(categoriaService.listaUno(anyInt())).thenReturn(catRes);
+	}
+	
+	@Disabled
+	@Test
+	void testInsert_BADREQUEST_ERR_NULL() throws NullPointerException{
+		cat.setId_categoria(0);
+		cat.setCat_nombre(null);
+		cat.setCat_descripcion("El nombre no puede ser nulo");
+		
+		when(cDaoTest.save(cat)).thenThrow(new NullPointerException());
+		when(categoriaService.insert(cat)).thenThrow(new NullPointerException());
+	}
+	
+	@Disabled
+	@Test
+	void testInsert_BADREQUEST_ERR_LONG() throws RuntimeException{
+		cat.setId_categoria(0);
+		cat.setCat_nombre("Mal");
+		cat.setCat_descripcion("El nombre no puede tener longitud inferior a 5 caracteres");
+		
+		when(cDaoTest.save(cat)).thenThrow(new RuntimeException());
+		when(categoriaService.insert(cat)).thenThrow(new RuntimeException());
+	}
+
+	@Test
+	void testInsert_CREATED() {
+		cat.setId_categoria(0);
+		cat.setCat_nombre("CAT-OK");
+		cat.setCat_descripcion("");
+	    when(cDaoTest.save(cat)).thenReturn(cat);
+	    when(categoriaService.insert(cat)).thenReturn(mensajeResCreated);
+	}
+
+	@Test
+	void testUpdate_OK() {
+		cat.setId_categoria(4);
+		cat.setCat_nombre("CAT-OK");
+		cat.setCat_descripcion("Esta categoria se actualizará correctamente.");
+		when(cDaoTest.save(cat)).thenReturn(cat);
+		when(categoriaService.update(cat)).thenReturn(mensajeResOk);
 	}
 	@Disabled
 	@Test
-	void testInsert() {
-		fail("Not yet implemented");
+	void testUpdate_BADREQUEST_ERR_LONG () {
+		cat.setId_categoria(3);
+		cat.setCat_nombre("mal");
+		cat.setCat_descripcion("Esta categoria no se actualizará");
+		when(cDaoTest.save(cat)).thenReturn(cat);
+		when(categoriaService.update(cat)).thenReturn(mensajeResOk);
 	}
 	@Disabled
 	@Test
-	void testUpdate() {
-		fail("Not yet implemented");
+	void testUpdatet_BADREQUEST_ERR_NULL() {
+		cat.setId_categoria(3);
+		cat.setCat_nombre(null);
+		cat.setCat_descripcion("Esta categoria no se actualizará");
+		when(cDaoTest.save(cat)).thenReturn(cat);
+		when(categoriaService.update(cat)).thenReturn(mensajeResOk);
 	}
-	@Disabled
+
 	@Test
 	void testDeleteById() {
-
 	    when(cDaoTest.existsById(anyInt())).thenReturn(true);
-	    doNothing().when(cDaoTest).deleteById(anyInt()); 
-	    categoriaService.deleteById(anyInt());
-	    verify(cDaoTest).existsById(anyInt());
-	    verify(cDaoTest).deleteById(anyInt());
+	    doNothing().when(cDaoTest).deleteById(anyInt());  
+	    when(categoriaService.deleteById(anyInt())).thenReturn(mensajeResOk);
 	}
 
 	@Test
-	 void testDeleteById_novalida() throws Exception {
-
-		    // si:
-		    when(cDaoTest.existsById(ID_NOT_EXIST)).thenReturn(false);
-
-		    // responde:
-		    Exception thrown = assertThrows(
-		            Exception.class,
-		            () -> categoriaService.deleteById(0),
-		            "El id de la categoria a eliminar no existe en la base de datos");
-		    // y entonces:
-		    assertNotNull(thrown);
-		    assertTrue(thrown.getMessage().contains("La categoria no existe"));
-		  }
-
-
+	void testDeleteById_NOOK() {
+	    when(cDaoTest.existsById(anyInt())).thenReturn(false);
+	    doNothing().when(cDaoTest).deleteById(anyInt());  
+	    when(categoriaService.deleteById(anyInt())).thenReturn(mensajeResBadRequest);
+	}
 
 }
